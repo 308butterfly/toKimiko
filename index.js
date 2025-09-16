@@ -67,14 +67,41 @@ canvas.addEventListener("touchend", (e) => {
 
     if (Math.abs(dxSwipe) > Math.abs(dySwipe)) {
         // horizontal swipe
-        if (dxSwipe > 30) { dx = speed; dy = 0; moving = true; } // right
-        else if (dxSwipe < -30) { dx = -speed; dy = 0; moving = true; } // left
+        if (dxSwipe > 30) {
+            if (dx === -speed) {
+                // currently moving left, swipe right = stop
+                dx = 0; moving = false; frame = 0;
+            } else {
+                dx = speed; dy = 0; moving = true;
+            }
+        } else if (dxSwipe < -30) {
+            if (dx === speed) {
+                // currently moving right, swipe left = stop
+                dx = 0; moving = false; frame = 0;
+            } else {
+                dx = -speed; dy = 0; moving = true;
+            }
+        }
     } else {
         // vertical swipe
-        if (dySwipe > 30) { dy = speed; dx = 0; moving = true; } // down
-        else if (dySwipe < -30) { dy = -speed; dx = 0; moving = true; } // up
+        if (dySwipe > 30) {
+            if (dy === -speed) {
+                // currently moving up, swipe down = stop
+                dy = 0; moving = false; frame = 0;
+            } else {
+                dy = speed; dx = 0; moving = true;
+            }
+        } else if (dySwipe < -30) {
+            if (dy === speed) {
+                // currently moving down, swipe up = stop
+                dy = 0; moving = false; frame = 0;
+            } else {
+                dy = -speed; dx = 0; moving = true;
+            }
+        }
     }
 }, { passive: false });
+
 
 canvas.addEventListener("touchcancel", () => {
     dx = 0; dy = 0; moving = false; frame = 0;
