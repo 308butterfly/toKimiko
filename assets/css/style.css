@@ -1,0 +1,16 @@
+        body {
+            margin: 0;
+            height: 100vh;
+            /* full viewport height */
+            display: flex;
+            justify-content: center;
+            /* center horizontally */
+            align-items: center;
+            /* center vertically */
+            background: #eee;
+            /* just to see the centering better */
+        }
+
+        canvas {
+            border: 1px solid black;
+        }

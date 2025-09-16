@@ -1,25 +1,3 @@
-// const canvas = document.getElementById("spriteCanvas");
-// const ctx = canvas.getContext("2d");
-// ctx.imageSmoothingEnabled = false; // keep pixel art sharp
-
-// const sprite = new Image();
-// sprite.src = "./assets/images/watermelon3Char.png";
-
-// let frame = 0;
-
-// function draw() {
-//     ctx.clearRect(0, 0, canvas.width, canvas.height);
-//     ctx.drawImage(
-//         sprite,
-//         frame * 32, 0, 32, 32,   // source frame
-//         0, 0, 128, 128           // draw scaled up 4×
-//     );
-//     frame = (frame + 1) % 8;
-//     setTimeout(draw, 200);
-// }
-
-// sprite.onload = draw;
-
 const canvas = document.getElementById("spriteCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -39,6 +17,10 @@ let speed = 2;
 let moving = false;
 let dx = 0, dy = 0;
 
+// document.onload(function(){
+//     const upBtn = document.getElementById("upBtn").onclick()
+// })
+
 document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowUp") { dy = -speed; dx = 0; moving = true; }
   if (e.key === "ArrowDown") { dy = speed; dx = 0; moving = true; }
@@ -52,6 +34,44 @@ document.addEventListener("keyup", (e) => {
     frame = 0; // reset to idle frame
   }
 });
+
+let touchStartX = 0;
+let touchStartY = 0;
+
+canvas.addEventListener("touchstart", (e) => {
+  touchStartX = e.changedTouches[0].screenX;
+  touchStartY = e.changedTouches[0].screenY;
+});
+
+canvas.addEventListener("touchend", (e) => {
+  let touchEndX = e.changedTouches[0].screenX;
+  let touchEndY = e.changedTouches[0].screenY;
+
+  let dxSwipe = touchEndX - touchStartX;
+  let dySwipe = touchEndY - touchStartY;
+
+  if (Math.abs(dxSwipe) > Math.abs(dySwipe)) {
+    // Horizontal swipe
+    if (dxSwipe > 30) { // swipe right
+      dx = speed; dy = 0; moving = true;
+    } else if (dxSwipe < -30) { // swipe left
+      dx = -speed; dy = 0; moving = true;
+    }
+  } else {
+    // Vertical swipe
+    if (dySwipe > 30) { // swipe down
+      dy = speed; dx = 0; moving = true;
+    } else if (dySwipe < -30) { // swipe up
+      dy = -speed; dx = 0; moving = true;
+    }
+  }
+});
+
+// Stop movement if finger is lifted without swiping
+canvas.addEventListener("touchcancel", () => {
+  dx = 0; dy = 0; moving = false; frame = 0;
+});
+
 
 function update() {
   if (moving) {
