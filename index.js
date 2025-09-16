@@ -18,12 +18,14 @@ let dx = 0, dy = 0;
 let moving = false;
 
 function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+    canvas.style.width = window.innerWidth + "px";
+    canvas.style.height = window.innerHeight + "px";
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-  // center sprite
-  x = (canvas.width - frameWidth * scale) / 2;
-  y = (canvas.height - frameHeight * scale) / 2;
+    // center sprite
+    x = (canvas.width - frameWidth * scale) / 2;
+    y = (canvas.height - frameHeight * scale) / 2;
 }
 
 
@@ -32,17 +34,17 @@ window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
 document.addEventListener("keydown", (e) => {
-  if (e.key === "ArrowUp") { dy = -speed; dx = 0; moving = true; }
-  if (e.key === "ArrowDown") { dy = speed; dx = 0; moving = true; }
-  if (e.key === "ArrowLeft") { dx = -speed; dy = 0; moving = true; }
-  if (e.key === "ArrowRight") { dx = speed; dy = 0; moving = true; }
+    if (e.key === "ArrowUp") { dy = -speed; dx = 0; moving = true; }
+    if (e.key === "ArrowDown") { dy = speed; dx = 0; moving = true; }
+    if (e.key === "ArrowLeft") { dx = -speed; dy = 0; moving = true; }
+    if (e.key === "ArrowRight") { dx = speed; dy = 0; moving = true; }
 });
 
 document.addEventListener("keyup", (e) => {
-  if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
-    dx = 0; dy = 0; moving = false;
-    frame = 0; // reset to idle frame
-  }
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+        dx = 0; dy = 0; moving = false;
+        frame = 0; // reset to idle frame
+    }
 });
 
 
@@ -50,69 +52,69 @@ document.addEventListener("keyup", (e) => {
 let touchStartX = 0, touchStartY = 0;
 
 canvas.addEventListener("touchstart", (e) => {
-  e.preventDefault();
-  touchStartX = e.changedTouches[0].screenX;
-  touchStartY = e.changedTouches[0].screenY;
+    e.preventDefault();
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
 }, { passive: false });
 
 canvas.addEventListener("touchend", (e) => {
-  e.preventDefault();
-  let touchEndX = e.changedTouches[0].screenX;
-  let touchEndY = e.changedTouches[0].screenY;
+    e.preventDefault();
+    let touchEndX = e.changedTouches[0].screenX;
+    let touchEndY = e.changedTouches[0].screenY;
 
-  let dxSwipe = touchEndX - touchStartX;
-  let dySwipe = touchEndY - touchStartY;
+    let dxSwipe = touchEndX - touchStartX;
+    let dySwipe = touchEndY - touchStartY;
 
-  if (Math.abs(dxSwipe) > Math.abs(dySwipe)) {
-    // horizontal swipe
-    if (dxSwipe > 30) { dx = speed; dy = 0; moving = true; } // right
-    else if (dxSwipe < -30) { dx = -speed; dy = 0; moving = true; } // left
-  } else {
-    // vertical swipe
-    if (dySwipe > 30) { dy = speed; dx = 0; moving = true; } // down
-    else if (dySwipe < -30) { dy = -speed; dx = 0; moving = true; } // up
-  }
+    if (Math.abs(dxSwipe) > Math.abs(dySwipe)) {
+        // horizontal swipe
+        if (dxSwipe > 30) { dx = speed; dy = 0; moving = true; } // right
+        else if (dxSwipe < -30) { dx = -speed; dy = 0; moving = true; } // left
+    } else {
+        // vertical swipe
+        if (dySwipe > 30) { dy = speed; dx = 0; moving = true; } // down
+        else if (dySwipe < -30) { dy = -speed; dx = 0; moving = true; } // up
+    }
 }, { passive: false });
 
 canvas.addEventListener("touchcancel", () => {
-  dx = 0; dy = 0; moving = false; frame = 0;
+    dx = 0; dy = 0; moving = false; frame = 0;
 });
 
 // --- Game Loop ---
 function update() {
-  if (moving) {
-    x += dx;
-    y += dy;
+    if (moving) {
+        x += dx;
+        y += dy;
 
-    // clamp inside screen
-    if (x < 0) x = 0;
-    if (y < 0) y = 0;
-    if (x > canvas.width - frameWidth * scale) x = canvas.width - frameWidth * scale;
-    if (y > canvas.height - frameHeight * scale) y = canvas.height - frameHeight * scale;
+        // clamp inside screen
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
+        if (x > canvas.width - frameWidth * scale) x = canvas.width - frameWidth * scale;
+        if (y > canvas.height - frameHeight * scale) y = canvas.height - frameHeight * scale;
 
-    frameTick++;
-    if (frameTick >= frameDelay) {
-      frame = (frame + 1) % frameCount;
-      frameTick = 0;
+        frameTick++;
+        if (frameTick >= frameDelay) {
+            frame = (frame + 1) % frameCount;
+            frameTick = 0;
+        }
     }
-  }
 }
 
 function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(
-    sprite,
-    frame * frameWidth, 0, frameWidth, frameHeight,
-    x, y, frameWidth * scale, frameHeight * scale
-  );
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(
+        sprite,
+        frame * frameWidth, 0, frameWidth, frameHeight,
+        x, y, frameWidth * scale, frameHeight * scale
+    );
 }
 
 function gameLoop() {
-  update();
-  draw();
-  requestAnimationFrame(gameLoop);
+    update();
+    draw();
+    requestAnimationFrame(gameLoop);
 }
 
 sprite.onload = () => {
-  gameLoop();
+    gameLoop();
 };
